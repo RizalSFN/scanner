@@ -1,0 +1,34 @@
+@media print {
+    @page{
+        margin-top: 30px;
+        margin-bottom: 30px;
+    }
+    #tombolAtas{
+        display: none;
+    }
+
+    #tableTitle{
+        column-span: 3;
+    }
+
+    #aksi{
+        display: none;
+    }
+
+    #total{
+        column-span: 3;
+    }
+
+    .card{
+        display: none;
+    }
+
+    #btn-print{
+        display: none;
+    }
+
+    #jne, #shope, #anteraja, #sicepat, #pos, #ninja, #idexpress{
+        display: none;
+    }
+
+}
