@@ -7,3 +7,7 @@ website untuk scan resi pengiriman barang
 - PHP
 - HTML
 - CSS
+
+## Text editor
+
+- Visual Studio Code
