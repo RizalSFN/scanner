@@ -1,3 +1,3 @@
 # scanner
 
-website untuk scan resi barang 
+website untuk scan resi pengiriman barang 
