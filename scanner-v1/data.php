@@ -33,28 +33,15 @@
             <link rel="stylesheet" href="assets/css/styleAnter.css">
         <?php } else if ($eks == "idexpress") { ?>
             <link rel="stylesheet" href="assets/css/styleIdExpress.css">
+        <?php } else { ?>
+            <link rel="stylesheet" href="assets/css/styleDefault.css">
         <?php } ?>
-    <?php } else if ($eks == NULL) { ?>
-        <link rel="stylesheet" href="assets/css/styleDefault.css">
-    <?php } else { 
-        if ($eks == "shopeexp") { ?>
-            <link rel="stylesheet" href="assets/css/styleShope.css">
-        <?php } else if ($eks == "jne") { ?>
-            <link rel="stylesheet" href="assets/css/styleJne.css">
-        <?php } else if ($eks == "jnt") { ?>
-            <link rel="stylesheet" href="assets/css/styleJnt.css">
-        <?php } else if ($eks == "pos") { ?>
-            <link rel="stylesheet" href="assets/css/stylePos.css">
-        <?php } else if ($eks == "ninjaexpress") { ?>
-            <link rel="stylesheet" href="assets/css/styleNinja.css">
-        <?php } else if ($eks == "sicepat") { ?>
-            <link rel="stylesheet" href="assets/css/styleSicepat.css">
-        <?php } else if ($eks == "anteraja") { ?>
-            <link rel="stylesheet" href="assets/css/styleAnter.css">
-        <?php } else if ($eks == "idexpress") { ?>
-            <link rel="stylesheet" href="assets/css/styleIdExpress.css">
+        <?php } else {
+        if ($eks == NULL) { ?>
+            <link rel="stylesheet" href="assets/css/styleDefault.css">
         <?php } ?>
     <?php } ?>
+
 </head>
 
 <body>
@@ -1290,7 +1277,7 @@
                     </div>
 
                 <?php } ?>
-            <?php } ?>
+                <?php } ?>x`
 
 
             </div>
