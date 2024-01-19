@@ -13,3 +13,4 @@ website ini dibuat bertujuan untuk mempermudah proses scan resi barang
 
 - Visual Studio Code
 - Xampp
+- Laptop HP
