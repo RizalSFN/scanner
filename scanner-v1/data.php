@@ -37,11 +37,11 @@
             <link rel="stylesheet" href="assets/css/styleDefault.css">
         <?php } ?>
         <?php } else {
-        if ($eks == NULL) { ?>
+        if ($eks == "") { ?>
             <link rel="stylesheet" href="assets/css/styleDefault.css">
         <?php } ?>
-    <?php } ?>
 
+    <?php } ?>
 </head>
 
 <body>
@@ -54,10 +54,12 @@
             </div>
         </div>
         <?php
-        if ($_GET['tgl'] == NULL) { ?>
+        if ($_GET['tgl'] == NULL && $_GET['to'] == NULL) { ?>
             <p class="row justify-content-start d-none">Tanggal : <?= $_GET['tgl'] ?></p>
-        <?php } else { ?>
+        <?php } else if ($_GET['tgl'] == !NULL && $_GET['to'] == NULL) { ?>
             <p class="row justify-content-start mx-3">Tanggal : <?= $_GET['tgl'] ?></p>
+        <?php } else if ($_GET['tgl'] == !NULL && $_GET['to'] == !NULL) { ?>
+            <p class="row justify-content-start mx-3">Tanggal : <?= $_GET['tgl'] ?> <br> Sampai : <?= $_GET['to'] ?></p>
         <?php } ?>
 
         <?php
@@ -263,324 +265,364 @@
 
             <div class="row my-4 mx-2 justify-content-center">
                 <!-- tabel shope express -->
-                <table class="table table-striped table-bordered text-center my-3 border-dark" id="shope">
-                    <tr>
-                        <th colspan="4" style="background-color: #fa5619;" class="text-white" id="tableTitle">Shopee Express</th>
-                    </tr>
-                    <tr>
-                        <th class="bg-secondary text-white">No</th>
-                        <th class="bg-secondary text-white col-sm-5">Kode</th>
-                        <th class="bg-secondary text-white">Pada</th>
-                        <th class="bg-secondary text-white" id="aksi">Aksi</th>
-                    </tr>
-
-                    <?php
-                    $no = 1;
-                    $sql = mysqli_query($koneksi, "SELECT * FROM shopeexp ORDER BY scan_pada DESC");
-
-
-                    if (mysqli_num_rows($sql) > 0) {
-                        while ($row = mysqli_fetch_array($sql)) :
-                    ?>
-
-                            <tr>
-                                <td><?= $no++ . '.' ?></td>
-                                <td><?= $row['kode_shopeexp'] ?></td>
-                                <td><?= $row['scan_pada'] ?></td>
-                                <td id="aksi"><a href="hapus.php?kode=<?= $row['kode_shopeexp'] ?>&id=<?= $row['id'] ?>&tgl=<?= $tanggal ?>" class="btn btn-danger hapus"><i class="bi bi-trash mx-1"></i>Hapus</a></td>
-                            </tr>
-
-                        <?php endwhile; ?>
-                    <?php } else { ?>
+                <?php $sql = mysqli_query($koneksi, "SELECT * FROM shopeexp");
+                if (mysqli_num_rows($sql) > 0) { ?>
+                    <table class="table table-striped table-bordered text-center my-3 border-dark" id="shope">
                         <tr>
-                            <td colspan="4" class="fw-bold">Tidak Ada Data</td>
+                            <th colspan="4" style="background-color: #fa5619;" class="text-white" id="tableTitle">Shopee Express</th>
                         </tr>
-                    <?php } ?>
-                    <tr>
-                        <th colspan="2" class="bg-secondary text-white">Total</th>
-                        <th colspan="2" class="bg-secondary text-white" id="total"><?= mysqli_num_rows($sql) ?></th>
-                    </tr>
-                </table>
+                        <tr>
+                            <th class="bg-secondary text-white">No</th>
+                            <th class="bg-secondary text-white col-sm-5">Kode</th>
+                            <th class="bg-secondary text-white">Pada</th>
+                            <th class="bg-secondary text-white" id="aksi">Aksi</th>
+                        </tr>
+
+                        <?php
+                        $no = 1;
+                        $sql = mysqli_query($koneksi, "SELECT * FROM shopeexp ORDER BY scan_pada DESC");
+
+
+                        if (mysqli_num_rows($sql) > 0) {
+                            while ($row = mysqli_fetch_array($sql)) :
+                        ?>
+
+                                <tr>
+                                    <td><?= $no++ . '.' ?></td>
+                                    <td><?= $row['kode_shopeexp'] ?></td>
+                                    <td><?= $row['scan_pada'] ?></td>
+                                    <td id="aksi"><a href="hapus.php?kode=<?= $row['kode_shopeexp'] ?>&id=<?= $row['id'] ?>&tgl=<?= $tanggal ?>" class="btn btn-danger hapus"><i class="bi bi-trash mx-1"></i>Hapus</a></td>
+                                </tr>
+
+                            <?php endwhile; ?>
+                        <?php } else { ?>
+                            <tr>
+                                <td colspan="4" class="fw-bold">Tidak Ada Data</td>
+                            </tr>
+                        <?php } ?>
+                        <tr>
+                            <th colspan="2" class="bg-secondary text-white">Total</th>
+                            <th colspan="2" class="bg-secondary text-white" id="total"><?= mysqli_num_rows($sql) ?></th>
+                        </tr>
+                    </table>
+                <?php } else {
+                    echo "";
+                } ?>
                 <!-- tabel jne -->
-                <table class="table table-striped table-bordered text-center my-3 border-dark" id="jne">
-                    <tr>
-                        <th colspan="4" class="bg-primary text-white" id="tableTitle">JNE</th>
-                    </tr>
-                    <tr>
-                        <th class="bg-secondary text-white">No</th>
-                        <th class="bg-secondary text-white col-sm-5">Kode</th>
-                        <th class="bg-secondary text-white">Pada</th>
-                        <th class="bg-secondary text-white" id="aksi">Aksi</th>
-                    </tr>
-
-                    <?php
-                    $no = 1;
-                    $tanggal = $_GET['tgl'];
-                    $sql = mysqli_query($koneksi, "SELECT * FROM jne ORDER BY scan_pada DESC");
-
-
-                    if (mysqli_num_rows($sql) > 0) {
-                        while ($row = mysqli_fetch_array($sql)) :
-                    ?>
-
-                            <tr>
-                                <td><?= $no++ . '.' ?></td>
-                                <td><?= $row['kode_jne'] ?></td>
-                                <td><?= $row['scan_pada'] ?></td>
-                                <td id="aksi"><a href="hapus.php?kode=<?= $row['kode_jne'] ?>&id=<?= $row['id'] ?>&tgl=<?= $tanggal ?>" class="btn btn-danger hapus"><i class="bi bi-trash mx-1"></i>Hapus</a></td>
-                            </tr>
-
-                        <?php endwhile; ?>
-                    <?php } else { ?>
+                <?php $sql = mysqli_query($koneksi, "SELECT * FROM jne");
+                if (mysqli_num_rows($sql) > 0) { ?>
+                    <table class="table table-striped table-bordered text-center my-3 border-dark" id="jne">
                         <tr>
-                            <td colspan="4" class="fw-bold">Tidak Ada Data</td>
+                            <th colspan="4" class="bg-primary text-white" id="tableTitle">JNE</th>
                         </tr>
-                    <?php } ?>
-                    <tr>
-                        <th colspan="2" class="bg-secondary text-white">Total</th>
-                        <th colspan="2" class="bg-secondary text-white" id="total"><?= mysqli_num_rows($sql) ?></th>
-                    </tr>
-                </table>
+                        <tr>
+                            <th class="bg-secondary text-white">No</th>
+                            <th class="bg-secondary text-white col-sm-5">Kode</th>
+                            <th class="bg-secondary text-white">Pada</th>
+                            <th class="bg-secondary text-white" id="aksi">Aksi</th>
+                        </tr>
+
+                        <?php
+                        $no = 1;
+                        $tanggal = $_GET['tgl'];
+                        $sql = mysqli_query($koneksi, "SELECT * FROM jne ORDER BY scan_pada DESC");
+
+
+                        if (mysqli_num_rows($sql) > 0) {
+                            while ($row = mysqli_fetch_array($sql)) :
+                        ?>
+
+                                <tr>
+                                    <td><?= $no++ . '.' ?></td>
+                                    <td><?= $row['kode_jne'] ?></td>
+                                    <td><?= $row['scan_pada'] ?></td>
+                                    <td id="aksi"><a href="hapus.php?kode=<?= $row['kode_jne'] ?>&id=<?= $row['id'] ?>&tgl=<?= $tanggal ?>" class="btn btn-danger hapus"><i class="bi bi-trash mx-1"></i>Hapus</a></td>
+                                </tr>
+
+                            <?php endwhile; ?>
+                        <?php } else { ?>
+                            <tr>
+                                <td colspan="4" class="fw-bold">Tidak Ada Data</td>
+                            </tr>
+                        <?php } ?>
+                        <tr>
+                            <th colspan="2" class="bg-secondary text-white">Total</th>
+                            <th colspan="2" class="bg-secondary text-white" id="total"><?= mysqli_num_rows($sql) ?></th>
+                        </tr>
+                    </table>
+                <?php } else {
+                    echo "";
+                } ?>
                 <!-- tabel jnt -->
-                <table class="table table-striped table-bordered text-center my-3 border-dark" id="jnt">
-                    <tr>
-                        <th colspan="4" style="background-color: red;" class="text-white" id="tableTitle">JNT</th>
-                    </tr>
-                    <tr>
-                        <th class="bg-secondary text-white">No</th>
-                        <th class="bg-secondary text-white col-sm-5">Kode</th>
-                        <th class="bg-secondary text-white">Pada</th>
-                        <th class="bg-secondary text-white" id="aksi">Aksi</th>
-                    </tr>
-
-                    <?php
-                    $no = 1;
-                    $tanggal = $_GET['tgl'];
-                    $sql = mysqli_query($koneksi, "SELECT * FROM jnt ORDER BY scan_pada DESC");
-
-
-                    if (mysqli_num_rows($sql) > 0) {
-                        while ($row = mysqli_fetch_array($sql)) :
-                    ?>
-
-                            <tr>
-                                <td><?= $no++ . '.' ?></td>
-                                <td><?= $row['kode_jnt'] ?></td>
-                                <td><?= $row['scan_pada'] ?></td>
-                                <td id="aksi"><a href="hapus.php?kode=<?= $row['kode_jnt'] ?>&id=<?= $row['id'] ?>&tgl=<?= $tanggal ?>" class="btn btn-danger hapus"><i class="bi bi-trash mx-1"></i>Hapus</a></td>
-                            </tr>
-
-                        <?php endwhile; ?>
-                    <?php } else { ?>
+                <?php $sql = mysqli_query($koneksi, "SELECT * FROM jnt");
+                if (mysqli_num_rows($sql) > 0) { ?>
+                    <table class="table table-striped table-bordered text-center my-3 border-dark" id="jnt">
                         <tr>
-                            <td colspan="4" class="fw-bold">Tidak Ada Data</td>
+                            <th colspan="4" style="background-color: red;" class="text-white" id="tableTitle">JNT</th>
                         </tr>
-                    <?php } ?>
-                    <tr>
-                        <th colspan="2" class="bg-secondary text-white">Total</th>
-                        <th colspan="2" class="bg-secondary text-white" id="total"><?= mysqli_num_rows($sql) ?></th>
-                    </tr>
-                </table>
+                        <tr>
+                            <th class="bg-secondary text-white">No</th>
+                            <th class="bg-secondary text-white col-sm-5">Kode</th>
+                            <th class="bg-secondary text-white">Pada</th>
+                            <th class="bg-secondary text-white" id="aksi">Aksi</th>
+                        </tr>
+
+                        <?php
+                        $no = 1;
+                        $tanggal = $_GET['tgl'];
+                        $sql = mysqli_query($koneksi, "SELECT * FROM jnt ORDER BY scan_pada DESC");
+
+
+                        if (mysqli_num_rows($sql) > 0) {
+                            while ($row = mysqli_fetch_array($sql)) :
+                        ?>
+
+                                <tr>
+                                    <td><?= $no++ . '.' ?></td>
+                                    <td><?= $row['kode_jnt'] ?></td>
+                                    <td><?= $row['scan_pada'] ?></td>
+                                    <td id="aksi"><a href="hapus.php?kode=<?= $row['kode_jnt'] ?>&id=<?= $row['id'] ?>&tgl=<?= $tanggal ?>" class="btn btn-danger hapus"><i class="bi bi-trash mx-1"></i>Hapus</a></td>
+                                </tr>
+
+                            <?php endwhile; ?>
+                        <?php } else { ?>
+                            <tr>
+                                <td colspan="4" class="fw-bold">Tidak Ada Data</td>
+                            </tr>
+                        <?php } ?>
+                        <tr>
+                            <th colspan="2" class="bg-secondary text-white">Total</th>
+                            <th colspan="2" class="bg-secondary text-white" id="total"><?= mysqli_num_rows($sql) ?></th>
+                        </tr>
+                    </table>
+                <?php } else {
+                    echo "";
+                } ?>
                 <!-- tabel pos -->
-                <table class="table table-striped table-bordered text-center my-3 border-dark" id="pos">
-                    <tr>
-                        <th colspan="4" style="background-color: #f77919;" class="text-white" id="tableTitle">POS</th>
-                    </tr>
-                    <tr>
-                        <th class="bg-secondary text-white">No</th>
-                        <th class="bg-secondary text-white col-sm-5">Kode</th>
-                        <th class="bg-secondary text-white">Pada</th>
-                        <th class="bg-secondary text-white" id="aksi">Aksi</th>
-                    </tr>
-
-                    <?php
-                    $no = 1;
-                    $tanggal = $_GET['tgl'];
-                    $sql = mysqli_query($koneksi, "SELECT * FROM pos ORDER BY scan_pada DESC");
-
-                    if (mysqli_num_rows($sql) > 0) {
-                        while ($row = mysqli_fetch_array($sql)) :
-                    ?>
-
-                            <tr>
-                                <td><?= $no++ . '.' ?></td>
-                                <td><?= $row['kode_pos'] ?></td>
-                                <td><?= $row['scan_pada'] ?></td>
-                                <td id="aksi"><a href="hapus.php?kode=<?= $row['kode_pos'] ?>&id=<?= $row['id'] ?>&tgl=<?= $tanggal ?>" class="btn btn-danger hapus"><i class="bi bi-trash mx-1"></i>Hapus</a></td>
-                            </tr>
-
-                        <?php endwhile; ?>
-                    <?php } else { ?>
+                <?php $sql = mysqli_query($koneksi, "SELECT * FROM pos");
+                if (mysqli_num_rows($sql) > 0) { ?>
+                    <table class="table table-striped table-bordered text-center my-3 border-dark" id="pos">
                         <tr>
-                            <td colspan="4" class="fw-bold">Tidak Ada Data</td>
+                            <th colspan="4" style="background-color: #f77919;" class="text-white" id="tableTitle">POS</th>
                         </tr>
-                    <?php } ?>
-                    <tr>
-                        <th colspan="2" class="bg-secondary text-white">Total</th>
-                        <th colspan="2" class="bg-secondary text-white" id="total"><?= mysqli_num_rows($sql) ?></th>
-                    </tr>
-                </table>
+                        <tr>
+                            <th class="bg-secondary text-white">No</th>
+                            <th class="bg-secondary text-white col-sm-5">Kode</th>
+                            <th class="bg-secondary text-white">Pada</th>
+                            <th class="bg-secondary text-white" id="aksi">Aksi</th>
+                        </tr>
+
+                        <?php
+                        $no = 1;
+                        $tanggal = $_GET['tgl'];
+                        $sql = mysqli_query($koneksi, "SELECT * FROM pos ORDER BY scan_pada DESC");
+
+                        if (mysqli_num_rows($sql) > 0) {
+                            while ($row = mysqli_fetch_array($sql)) :
+                        ?>
+
+                                <tr>
+                                    <td><?= $no++ . '.' ?></td>
+                                    <td><?= $row['kode_pos'] ?></td>
+                                    <td><?= $row['scan_pada'] ?></td>
+                                    <td id="aksi"><a href="hapus.php?kode=<?= $row['kode_pos'] ?>&id=<?= $row['id'] ?>&tgl=<?= $tanggal ?>" class="btn btn-danger hapus"><i class="bi bi-trash mx-1"></i>Hapus</a></td>
+                                </tr>
+
+                            <?php endwhile; ?>
+                        <?php } else { ?>
+                            <tr>
+                                <td colspan="4" class="fw-bold">Tidak Ada Data</td>
+                            </tr>
+                        <?php } ?>
+                        <tr>
+                            <th colspan="2" class="bg-secondary text-white">Total</th>
+                            <th colspan="2" class="bg-secondary text-white" id="total"><?= mysqli_num_rows($sql) ?></th>
+                        </tr>
+                    </table>
+                <?php } else {
+                    echo "";
+                } ?>
                 <div class="jarak"></div>
                 <!-- tabel SiCepat -->
-                <table class="table table-striped table-bordered text-center my-3 border-dark" id="sicepat">
-                    <tr>
-                        <th colspan="4" style="background-color: red;" class="text-white" id="tableTitle">SiCepat</th>
-                    </tr>
-                    <tr>
-                        <th class="bg-secondary text-white">No</th>
-                        <th class="bg-secondary text-white col-sm-5">Kode</th>
-                        <th class="bg-secondary text-white">Pada</th>
-                        <th class="bg-secondary text-white" id="aksi">Aksi</th>
-                    </tr>
-
-                    <?php
-                    $no = 1;
-                    $tanggal = $_GET['tgl'];
-                    $sql = mysqli_query($koneksi, "SELECT * FROM sicepat ORDER BY scan_pada DESC");
-
-
-                    if (mysqli_num_rows($sql) > 0) {
-                        while ($row = mysqli_fetch_array($sql)) :
-                    ?>
-
-                            <tr>
-                                <td><?= $no++ . '.' ?></td>
-                                <td><?= $row['kode_sicepat'] ?></td>
-                                <td><?= $row['scan_pada'] ?></td>
-                                <td id="aksi"><a href="hapus.php?kode=<?= $row['kode_sicepat'] ?>&id=<?= $row['id'] ?>&tgl=<?= $tanggal ?>" class="btn btn-danger hapus"><i class="bi bi-trash mx-1"></i>Hapus</a></td>
-                            </tr>
-
-                        <?php endwhile; ?>
-                    <?php } else { ?>
+                <?php $sql = mysqli_query($koneksi, "SELECT * FROM sicepat");
+                if (mysqli_num_rows($sql) > 0) { ?>
+                    <table class="table table-striped table-bordered text-center my-3 border-dark" id="sicepat">
                         <tr>
-                            <td colspan="4" class="fw-bold">Tidak Ada Data</td>
+                            <th colspan="4" style="background-color: red;" class="text-white" id="tableTitle">SiCepat</th>
                         </tr>
-                    <?php } ?>
-                    <tr>
-                        <th colspan="2" class="bg-secondary text-white">Total</th>
-                        <th colspan="2" class="bg-secondary text-white" id="total"><?= mysqli_num_rows($sql) ?></th>
-                    </tr>
-                </table>
+                        <tr>
+                            <th class="bg-secondary text-white">No</th>
+                            <th class="bg-secondary text-white col-sm-5">Kode</th>
+                            <th class="bg-secondary text-white">Pada</th>
+                            <th class="bg-secondary text-white" id="aksi">Aksi</th>
+                        </tr>
+
+                        <?php
+                        $no = 1;
+                        $tanggal = $_GET['tgl'];
+                        $sql = mysqli_query($koneksi, "SELECT * FROM sicepat ORDER BY scan_pada DESC");
+
+
+                        if (mysqli_num_rows($sql) > 0) {
+                            while ($row = mysqli_fetch_array($sql)) :
+                        ?>
+
+                                <tr>
+                                    <td><?= $no++ . '.' ?></td>
+                                    <td><?= $row['kode_sicepat'] ?></td>
+                                    <td><?= $row['scan_pada'] ?></td>
+                                    <td id="aksi"><a href="hapus.php?kode=<?= $row['kode_sicepat'] ?>&id=<?= $row['id'] ?>&tgl=<?= $tanggal ?>" class="btn btn-danger hapus"><i class="bi bi-trash mx-1"></i>Hapus</a></td>
+                                </tr>
+
+                            <?php endwhile; ?>
+                        <?php } else { ?>
+                            <tr>
+                                <td colspan="4" class="fw-bold">Tidak Ada Data</td>
+                            </tr>
+                        <?php } ?>
+                        <tr>
+                            <th colspan="2" class="bg-secondary text-white">Total</th>
+                            <th colspan="2" class="bg-secondary text-white" id="total"><?= mysqli_num_rows($sql) ?></th>
+                        </tr>
+                    </table>
+                <?php } else {
+                    echo "";
+                } ?>
                 <!-- tabel Anter Aja -->
-                <table class="table table-striped table-bordered text-center my-3 border-dark" id="anteraja">
-                    <tr>
-                        <th colspan="4" style="background-color: #f52268;" class="text-white" id="tableTitle">Anter Aja</th>
-                    </tr>
-                    <tr>
-                        <th class="bg-secondary text-white">No</th>
-                        <th class="bg-secondary text-white col-sm-5">Kode</th>
-                        <th class="bg-secondary text-white">Pada</th>
-                        <th class="bg-secondary text-white" id="aksi">Aksi</th>
-                    </tr>
-
-                    <?php
-                    $no = 1;
-                    $tanggal = $_GET['tgl'];
-                    $sql = mysqli_query($koneksi, "SELECT * FROM anteraja ORDER BY scan_pada DESC");
-
-
-                    if (mysqli_num_rows($sql) > 0) {
-                        while ($row = mysqli_fetch_array($sql)) :
-                    ?>
-
-                            <tr>
-                                <td><?= $no++ . '.' ?></td>
-                                <td><?= $row['kode_anteraja'] ?></td>
-                                <td><?= $row['scan_pada'] ?></td>
-                                <td id="aksi"><a href="hapus.php?kode=<?= $row['kode_anteraja'] ?>&id=<?= $row['id'] ?>&tgl=<?= $tanggal ?>" class="btn btn-danger hapus"><i class="bi bi-trash mx-1"></i>Hapus</a></td>
-                            </tr>
-
-                        <?php endwhile; ?>
-                    <?php } else { ?>
+                <?php $sql = mysqli_query($koneksi, "SELECT * FROM anteraja");
+                if (mysqli_num_rows($sql) > 0) { ?>
+                    <table class="table table-striped table-bordered text-center my-3 border-dark" id="anteraja">
                         <tr>
-                            <td colspan="4" class="fw-bold">Tidak Ada Data</td>
+                            <th colspan="4" style="background-color: #f52268;" class="text-white" id="tableTitle">Anter Aja</th>
                         </tr>
-                    <?php } ?>
-                    <tr>
-                        <th colspan="2" class="bg-secondary text-white">Total</th>
-                        <th colspan="2" class="bg-secondary text-white" id="total"><?= mysqli_num_rows($sql) ?></th>
-                    </tr>
-                </table>
+                        <tr>
+                            <th class="bg-secondary text-white">No</th>
+                            <th class="bg-secondary text-white col-sm-5">Kode</th>
+                            <th class="bg-secondary text-white">Pada</th>
+                            <th class="bg-secondary text-white" id="aksi">Aksi</th>
+                        </tr>
+
+                        <?php
+                        $no = 1;
+                        $tanggal = $_GET['tgl'];
+                        $sql = mysqli_query($koneksi, "SELECT * FROM anteraja ORDER BY scan_pada DESC");
+
+
+                        if (mysqli_num_rows($sql) > 0) {
+                            while ($row = mysqli_fetch_array($sql)) :
+                        ?>
+
+                                <tr>
+                                    <td><?= $no++ . '.' ?></td>
+                                    <td><?= $row['kode_anteraja'] ?></td>
+                                    <td><?= $row['scan_pada'] ?></td>
+                                    <td id="aksi"><a href="hapus.php?kode=<?= $row['kode_anteraja'] ?>&id=<?= $row['id'] ?>&tgl=<?= $tanggal ?>" class="btn btn-danger hapus"><i class="bi bi-trash mx-1"></i>Hapus</a></td>
+                                </tr>
+
+                            <?php endwhile; ?>
+                        <?php } else { ?>
+                            <tr>
+                                <td colspan="4" class="fw-bold">Tidak Ada Data</td>
+                            </tr>
+                        <?php } ?>
+                        <tr>
+                            <th colspan="2" class="bg-secondary text-white">Total</th>
+                            <th colspan="2" class="bg-secondary text-white" id="total"><?= mysqli_num_rows($sql) ?></th>
+                        </tr>
+                    </table>
+                <?php } else {
+                    echo "";
+                } ?>
                 <!-- tabel Ninja Express -->
-                <table class="table table-striped table-bordered text-center my-3 border-dark" id="ninja">
-                    <tr>
-                        <th colspan="4" style="background-color: red;" class="text-white" id="tableTitle">Ninja Express</th>
-                    </tr>
-                    <tr>
-                        <th class="bg-secondary text-white">No</th>
-                        <th class="bg-secondary text-white col-sm-5">Kode</th>
-                        <th class="bg-secondary text-white">Pada</th>
-                        <th class="bg-secondary text-white" id="aksi">Aksi</th>
-                    </tr>
-
-                    <?php
-                    $no = 1;
-                    $tanggal = $_GET['tgl'];
-                    $sql = mysqli_query($koneksi, "SELECT * FROM ninjaexpress ORDER BY scan_pada DESC");
-
-
-                    if (mysqli_num_rows($sql) > 0) {
-                        while ($row = mysqli_fetch_array($sql)) :
-                    ?>
-
-                            <tr>
-                                <td><?= $no++ . '.' ?></td>
-                                <td><?= $row['kode_ninjaexpress'] ?></td>
-                                <td><?= $row['scan_pada'] ?></td>
-                                <td id="aksi"><a href="hapus.php?kode=<?= $row['kode_ninjaexpress'] ?>&id=<?= $row['id'] ?>&tgl=<?= $tanggal ?>" class="btn btn-danger hapus"><i class="bi bi-trash mx-1"></i>Hapus</a></td>
-                            </tr>
-
-                        <?php endwhile; ?>
-                    <?php } else { ?>
+                <?php $sql = mysqli_query($koneksi, "SELECT * FROM ninjaexpress");
+                if (mysqli_num_rows($sql) > 0) { ?>
+                    <table class="table table-striped table-bordered text-center my-3 border-dark" id="ninja">
                         <tr>
-                            <td colspan="4" class="fw-bold">Tidak Ada Data</td>
+                            <th colspan="4" style="background-color: red;" class="text-white" id="tableTitle">Ninja Express</th>
                         </tr>
-                    <?php } ?>
-                    <tr>
-                        <th colspan="2" class="bg-secondary text-white">Total</th>
-                        <th colspan="2" class="bg-secondary text-white" id="total"><?= mysqli_num_rows($sql) ?></th>
-                    </tr>
-                </table>
+                        <tr>
+                            <th class="bg-secondary text-white">No</th>
+                            <th class="bg-secondary text-white col-sm-5">Kode</th>
+                            <th class="bg-secondary text-white">Pada</th>
+                            <th class="bg-secondary text-white" id="aksi">Aksi</th>
+                        </tr>
+
+                        <?php
+                        $no = 1;
+                        $tanggal = $_GET['tgl'];
+                        $sql = mysqli_query($koneksi, "SELECT * FROM ninjaexpress ORDER BY scan_pada DESC");
+
+
+                        if (mysqli_num_rows($sql) > 0) {
+                            while ($row = mysqli_fetch_array($sql)) :
+                        ?>
+
+                                <tr>
+                                    <td><?= $no++ . '.' ?></td>
+                                    <td><?= $row['kode_ninjaexpress'] ?></td>
+                                    <td><?= $row['scan_pada'] ?></td>
+                                    <td id="aksi"><a href="hapus.php?kode=<?= $row['kode_ninjaexpress'] ?>&id=<?= $row['id'] ?>&tgl=<?= $tanggal ?>" class="btn btn-danger hapus"><i class="bi bi-trash mx-1"></i>Hapus</a></td>
+                                </tr>
+
+                            <?php endwhile; ?>
+                        <?php } else { ?>
+                            <tr>
+                                <td colspan="4" class="fw-bold">Tidak Ada Data</td>
+                            </tr>
+                        <?php } ?>
+                        <tr>
+                            <th colspan="2" class="bg-secondary text-white">Total</th>
+                            <th colspan="2" class="bg-secondary text-white" id="total"><?= mysqli_num_rows($sql) ?></th>
+                        </tr>
+                    </table>
+                <?php } else {
+                    echo "";
+                } ?>
                 <!-- tabel ID Express -->
-                <table class="table table-striped table-bordered text-center my-3 border-dark" id="idexpress">
-                    <tr>
-                        <th colspan="4" style="background-color: #fc2b2b;" class="text-white" id="tableTitle">ID Express</th>
-                    </tr>
-                    <tr>
-                        <th class="bg-secondary text-white">No</th>
-                        <th class="bg-secondary text-white col-sm-5">Kode</th>
-                        <th class="bg-secondary text-white">Pada</th>
-                        <th class="bg-secondary text-white" id="aksi">Aksi</th>
-                    </tr>
-
-                    <?php
-                    $no = 1;
-                    $tanggal = $_GET['tgl'];
-                    $sql = mysqli_query($koneksi, "SELECT * FROM idexpress ORDER BY scan_pada DESC");
-
-
-                    if (mysqli_num_rows($sql) > 0) {
-                        while ($row = mysqli_fetch_array($sql)) :
-                    ?>
-
-                            <tr>
-                                <td><?= $no++ . '.' ?></td>
-                                <td><?= $row['kode_idexpress'] ?></td>
-                                <td><?= $row['scan_pada'] ?></td>
-                                <td id="aksi"><a href="hapus.php?kode=<?= $row['kode_idexpress'] ?>&id=<?= $row['id'] ?>&tgl=<?= $tanggal ?>" class="btn btn-danger hapus"><i class="bi bi-trash mx-1"></i>Hapus</a></td>
-                            </tr>
-
-                        <?php endwhile; ?>
-                    <?php } else { ?>
+                <?php $sql = mysqli_query($koneksi, "SELECT * FROM idexpress");
+                if (mysqli_num_rows($sql) > 0) { ?>
+                    <table class="table table-striped table-bordered text-center my-3 border-dark" id="idexpress">
                         <tr>
-                            <td colspan="4" class="fw-bold">Tidak Ada Data</td>
+                            <th colspan="4" style="background-color: #fc2b2b;" class="text-white" id="tableTitle">ID Express</th>
                         </tr>
-                    <?php } ?>
-                    <tr>
-                        <th colspan="2" class="bg-secondary text-white">Total</th>
-                        <th colspan="2" class="bg-secondary text-white" id="total"><?= mysqli_num_rows($sql) ?></th>
-                    </tr>
-                </table>
+                        <tr>
+                            <th class="bg-secondary text-white">No</th>
+                            <th class="bg-secondary text-white col-sm-5">Kode</th>
+                            <th class="bg-secondary text-white">Pada</th>
+                            <th class="bg-secondary text-white" id="aksi">Aksi</th>
+                        </tr>
+
+                        <?php
+                        $no = 1;
+                        $tanggal = $_GET['tgl'];
+                        $sql = mysqli_query($koneksi, "SELECT * FROM idexpress ORDER BY scan_pada DESC");
+
+
+                        if (mysqli_num_rows($sql) > 0) {
+                            while ($row = mysqli_fetch_array($sql)) :
+                        ?>
+
+                                <tr>
+                                    <td><?= $no++ . '.' ?></td>
+                                    <td><?= $row['kode_idexpress'] ?></td>
+                                    <td><?= $row['scan_pada'] ?></td>
+                                    <td id="aksi"><a href="hapus.php?kode=<?= $row['kode_idexpress'] ?>&id=<?= $row['id'] ?>&tgl=<?= $tanggal ?>" class="btn btn-danger hapus"><i class="bi bi-trash mx-1"></i>Hapus</a></td>
+                                </tr>
+
+                            <?php endwhile; ?>
+                        <?php } else { ?>
+                            <tr>
+                                <td colspan="4" class="fw-bold">Tidak Ada Data</td>
+                            </tr>
+                        <?php } ?>
+                        <tr>
+                            <th colspan="2" class="bg-secondary text-white">Total</th>
+                            <th colspan="2" class="bg-secondary text-white" id="total"><?= mysqli_num_rows($sql) ?></th>
+                        </tr>
+                    </table>
+                <?php } else {
+                    echo "";
+                } ?>
             </div>
 
         <?php } else if ($_GET['tgl'] == !NULL && $_GET['eks'] == NULL) { ?>
@@ -783,326 +825,367 @@
             </div>
 
             <div class="row my-4 mx-2 justify-content-center">
+                <?php $tgl = $_GET['tgl']; ?>
                 <!-- tabel shope express -->
-                <table class="table table-striped table-bordered text-center my-3 border-dark" id="shopee">
-                    <tr>
-                        <th colspan="4" style="background-color: #fa5619;" class="text-white" id="tableTitle">Shopee Express</th>
-                    </tr>
-                    <tr>
-                        <th class="bg-secondary text-white">No</th>
-                        <th class="bg-secondary text-white col-sm-5">Kode</th>
-                        <th class="bg-secondary text-white">Pada</th>
-                        <th class="bg-secondary text-white" id="aksi">Aksi</th>
-                    </tr>
-
-                    <?php
-                    $no = 1;
-                    $tanggal = $_GET['tgl'];
-                    $sql = mysqli_query($koneksi, "SELECT * FROM shopeexp WHERE scan_pada = '$tanggal' ORDER BY scan_pada DESC");
-
-
-                    if (mysqli_num_rows($sql) > 0) {
-                        while ($row = mysqli_fetch_array($sql)) :
-                    ?>
-
-                            <tr>
-                                <td><?= $no++ . '.' ?></td>
-                                <td><?= $row['kode_shopeexp'] ?></td>
-                                <td><?= $row['scan_pada'] ?></td>
-                                <td id="aksi"><a href="hapus.php?kode=<?= $row['kode_shopeexp'] ?>&id=<?= $row['id'] ?>&tgl=<?= $tanggal ?>" class="btn btn-danger hapus"><i class="bi bi-trash mx-1"></i>Hapus</a></td>
-                            </tr>
-
-                        <?php endwhile; ?>
-                    <?php } else { ?>
+                <?php $sql = mysqli_query($koneksi, "SELECT * FROM shopeexp WHERE scan_pada = '$tgl'");
+                if (mysqli_num_rows($sql) > 0) { ?>
+                    <table class="table table-striped table-bordered text-center my-3 border-dark" id="shopee">
                         <tr>
-                            <td colspan="4" class="fw-bold">Tidak Ada Data</td>
+                            <th colspan="4" style="background-color: #fa5619;" class="text-white" id="tableTitle">Shopee Express</th>
                         </tr>
-                    <?php } ?>
-                    <tr>
-                        <th colspan="2" class="bg-secondary text-white">Total</th>
-                        <th colspan="2" class="bg-secondary text-white" id="total"><?= mysqli_num_rows($sql) ?></th>
-                    </tr>
-                </table>
+                        <tr>
+                            <th class="bg-secondary text-white">No</th>
+                            <th class="bg-secondary text-white col-sm-5">Kode</th>
+                            <th class="bg-secondary text-white">Pada</th>
+                            <th class="bg-secondary text-white" id="aksi">Aksi</th>
+                        </tr>
+
+                        <?php
+                        $no = 1;
+                        $tanggal = $_GET['tgl'];
+                        $sql = mysqli_query($koneksi, "SELECT * FROM shopeexp WHERE scan_pada = '$tanggal' ORDER BY scan_pada DESC");
+
+
+                        if (mysqli_num_rows($sql) > 0) {
+                            while ($row = mysqli_fetch_array($sql)) :
+                        ?>
+
+                                <tr>
+                                    <td><?= $no++ . '.' ?></td>
+                                    <td><?= $row['kode_shopeexp'] ?></td>
+                                    <td><?= $row['scan_pada'] ?></td>
+                                    <td id="aksi"><a href="hapus.php?kode=<?= $row['kode_shopeexp'] ?>&id=<?= $row['id'] ?>&tgl=<?= $tanggal ?>" class="btn btn-danger hapus"><i class="bi bi-trash mx-1"></i>Hapus</a></td>
+                                </tr>
+
+                            <?php endwhile; ?>
+                        <?php } else { ?>
+                            <tr>
+                                <td colspan="4" class="fw-bold">Tidak Ada Data</td>
+                            </tr>
+                        <?php } ?>
+                        <tr>
+                            <th colspan="2" class="bg-secondary text-white">Total</th>
+                            <th colspan="2" class="bg-secondary text-white" id="total"><?= mysqli_num_rows($sql) ?></th>
+                        </tr>
+                    </table>
+                <?php } else {
+                    echo "";
+                } ?>
                 <!-- tabel jne -->
-                <table class="table table-striped table-bordered text-center my-3 border-dark" id="jne">
-                    <tr>
-                        <th colspan="4" class="bg-primary text-white" id="tableTitle">JNE</th>
-                    </tr>
-                    <tr>
-                        <th class="bg-secondary text-white">No</th>
-                        <th class="bg-secondary text-white col-sm-5">Kode</th>
-                        <th class="bg-secondary text-white">Pada</th>
-                        <th class="bg-secondary text-white" id="aksi">Aksi</th>
-                    </tr>
-
-                    <?php
-                    $no = 1;
-                    $tanggal = $_GET['tgl'];
-                    $sql = mysqli_query($koneksi, "SELECT * FROM jne WHERE scan_pada = '$tanggal' ORDER BY scan_pada DESC");
-
-
-                    if (mysqli_num_rows($sql) > 0) {
-                        while ($row = mysqli_fetch_array($sql)) :
-                    ?>
-
-                            <tr>
-                                <td><?= $no++ . '.' ?></td>
-                                <td><?= $row['kode_jne'] ?></td>
-                                <td><?= $row['scan_pada'] ?></td>
-                                <td id="aksi"><a href="hapus.php?kode=<?= $row['kode_jne'] ?>&id=<?= $row['id'] ?>&tgl=<?= $tanggal ?>" class="btn btn-danger hapus"><i class="bi bi-trash mx-1"></i>Hapus</a></td>
-                            </tr>
-
-                        <?php endwhile; ?>
-                    <?php } else { ?>
+                <?php $sql = mysqli_query($koneksi, "SELECT * FROM jne WHERE scan_pada = '$tgl'");
+                if (mysqli_num_rows($sql) > 0) { ?>
+                    <table class="table table-striped table-bordered text-center my-3 border-dark" id="jne">
                         <tr>
-                            <td colspan="4" class="fw-bold">Tidak Ada Data</td>
+                            <th colspan="4" class="bg-primary text-white" id="tableTitle">JNE</th>
                         </tr>
-                    <?php } ?>
-                    <tr>
-                        <th colspan="2" class="bg-secondary text-white">Total</th>
-                        <th colspan="2" class="bg-secondary text-white" id="total"><?= mysqli_num_rows($sql) ?></th>
-                    </tr>
-                </table>
+                        <tr>
+                            <th class="bg-secondary text-white">No</th>
+                            <th class="bg-secondary text-white col-sm-5">Kode</th>
+                            <th class="bg-secondary text-white">Pada</th>
+                            <th class="bg-secondary text-white" id="aksi">Aksi</th>
+                        </tr>
+
+                        <?php
+                        $no = 1;
+                        $tanggal = $_GET['tgl'];
+                        $sql = mysqli_query($koneksi, "SELECT * FROM jne WHERE scan_pada = '$tanggal' ORDER BY scan_pada DESC");
+
+
+                        if (mysqli_num_rows($sql) > 0) {
+                            while ($row = mysqli_fetch_array($sql)) :
+                        ?>
+
+                                <tr>
+                                    <td><?= $no++ . '.' ?></td>
+                                    <td><?= $row['kode_jne'] ?></td>
+                                    <td><?= $row['scan_pada'] ?></td>
+                                    <td id="aksi"><a href="hapus.php?kode=<?= $row['kode_jne'] ?>&id=<?= $row['id'] ?>&tgl=<?= $tanggal ?>" class="btn btn-danger hapus"><i class="bi bi-trash mx-1"></i>Hapus</a></td>
+                                </tr>
+
+                            <?php endwhile; ?>
+                        <?php } else { ?>
+                            <tr>
+                                <td colspan="4" class="fw-bold">Tidak Ada Data</td>
+                            </tr>
+                        <?php } ?>
+                        <tr>
+                            <th colspan="2" class="bg-secondary text-white">Total</th>
+                            <th colspan="2" class="bg-secondary text-white" id="total"><?= mysqli_num_rows($sql) ?></th>
+                        </tr>
+                    </table>
+                <?php } else {
+                    echo "";
+                } ?>
                 <!-- tabel jnt -->
-                <table class="table table-striped table-bordered text-center my-3 border-dark" id="jnt">
-                    <tr>
-                        <th colspan="4" style="background-color: red;" class="text-white" id="tableTitle">JNT</th>
-                    </tr>
-                    <tr>
-                        <th class="bg-secondary text-white">No</th>
-                        <th class="bg-secondary text-white col-sm-5">Kode</th>
-                        <th class="bg-secondary text-white">Pada</th>
-                        <th class="bg-secondary text-white" id="aksi">Aksi</th>
-                    </tr>
-
-                    <?php
-                    $no = 1;
-                    $tanggal = $_GET['tgl'];
-                    $sql = mysqli_query($koneksi, "SELECT * FROM jnt WHERE scan_pada = '$tanggal' ORDER BY scan_pada DESC");
-
-                    if (mysqli_num_rows($sql) > 0) {
-                        while ($row = mysqli_fetch_array($sql)) :
-                    ?>
-
-                            <tr>
-                                <td><?= $no++ . '.' ?></td>
-                                <td><?= $row['kode_jnt'] ?></td>
-                                <td><?= $row['scan_pada'] ?></td>
-                                <td id="aksi"><a href="hapus.php?kode=<?= $row['kode_jnt'] ?>&id=<?= $row['id'] ?>&tgl=<?= $tanggal ?>" class="btn btn-danger hapus"><i class="bi bi-trash mx-1"></i>Hapus</a></td>
-                            </tr>
-
-                        <?php endwhile; ?>
-                    <?php } else { ?>
+                <?php $sql = mysqli_query($koneksi, "SELECT * FROM jnt WHERE scan_pada = '$tgl'");
+                if (mysqli_num_rows($sql) > 0) { ?>
+                    <table class="table table-striped table-bordered text-center my-3 border-dark" id="jnt">
                         <tr>
-                            <td colspan="4" class="fw-bold">Tidak Ada Data</td>
+                            <th colspan="4" style="background-color: red;" class="text-white" id="tableTitle">JNT</th>
                         </tr>
-                    <?php } ?>
-                    <tr>
-                        <th colspan="2" class="bg-secondary text-white">Total</th>
-                        <th colspan="2" class="bg-secondary text-white" id="total"><?= mysqli_num_rows($sql) ?></th>
-                    </tr>
-                </table>
+                        <tr>
+                            <th class="bg-secondary text-white">No</th>
+                            <th class="bg-secondary text-white col-sm-5">Kode</th>
+                            <th class="bg-secondary text-white">Pada</th>
+                            <th class="bg-secondary text-white" id="aksi">Aksi</th>
+                        </tr>
+
+                        <?php
+                        $no = 1;
+                        $tanggal = $_GET['tgl'];
+                        $sql = mysqli_query($koneksi, "SELECT * FROM jnt WHERE scan_pada = '$tanggal' ORDER BY scan_pada DESC");
+
+                        if (mysqli_num_rows($sql) > 0) {
+                            while ($row = mysqli_fetch_array($sql)) :
+                        ?>
+
+                                <tr>
+                                    <td><?= $no++ . '.' ?></td>
+                                    <td><?= $row['kode_jnt'] ?></td>
+                                    <td><?= $row['scan_pada'] ?></td>
+                                    <td id="aksi"><a href="hapus.php?kode=<?= $row['kode_jnt'] ?>&id=<?= $row['id'] ?>&tgl=<?= $tanggal ?>" class="btn btn-danger hapus"><i class="bi bi-trash mx-1"></i>Hapus</a></td>
+                                </tr>
+
+                            <?php endwhile; ?>
+                        <?php } else { ?>
+                            <tr>
+                                <td colspan="4" class="fw-bold">Tidak Ada Data</td>
+                            </tr>
+                        <?php } ?>
+                        <tr>
+                            <th colspan="2" class="bg-secondary text-white">Total</th>
+                            <th colspan="2" class="bg-secondary text-white" id="total"><?= mysqli_num_rows($sql) ?></th>
+                        </tr>
+                    </table>
+                <?php } else {
+                    echo "";
+                } ?>
                 <!-- tabel pos -->
-                <table class="table table-striped table-bordered text-center my-3 border-dark" id="pos">
-                    <tr>
-                        <th colspan="4" style="background-color: #f77919;" class="text-white" id="tableTitle">POS</th>
-                    </tr>
-                    <tr>
-                        <th class="bg-secondary text-white">No</th>
-                        <th class="bg-secondary text-white col-sm-5">Kode</th>
-                        <th class="bg-secondary text-white">Pada</th>
-                        <th class="bg-secondary text-white" id="aksi">Aksi</th>
-                    </tr>
-
-                    <?php
-                    $no = 1;
-                    $tanggal = $_GET['tgl'];
-                    $sql = mysqli_query($koneksi, "SELECT * FROM pos WHERE scan_pada = '$tanggal' ORDER BY scan_pada DESC");
-
-
-                    if (mysqli_num_rows($sql) > 0) {
-                        while ($row = mysqli_fetch_array($sql)) :
-                    ?>
-
-                            <tr>
-                                <td><?= $no++ . '.' ?></td>
-                                <td><?= $row['kode_pos'] ?></td>
-                                <td><?= $row['scan_pada'] ?></td>
-                                <td id="aksi"><a href="hapus.php?kode=<?= $row['kode_pos'] ?>&id=<?= $row['id'] ?>&tgl=<?= $tanggal ?>" class="btn btn-danger hapus"><i class="bi bi-trash mx-1"></i>Hapus</a></td>
-                            </tr>
-
-                        <?php endwhile; ?>
-                    <?php } else { ?>
+                <?php $sql = mysqli_query($koneksi, "SELECT * FROM pos WHERE scan_pada = '$tgl'");
+                if (mysqli_num_rows($sql) > 0) { ?>
+                    <table class="table table-striped table-bordered text-center my-3 border-dark" id="pos">
                         <tr>
-                            <td colspan="4" class="fw-bold">Tidak Ada Data</td>
+                            <th colspan="4" style="background-color: #f77919;" class="text-white" id="tableTitle">POS</th>
                         </tr>
-                    <?php } ?>
-                    <tr>
-                        <th colspan="2" class="bg-secondary text-white">Total</th>
-                        <th colspan="2" class="bg-secondary text-white" id="total"><?= mysqli_num_rows($sql) ?></th>
-                    </tr>
-                </table>
+                        <tr>
+                            <th class="bg-secondary text-white">No</th>
+                            <th class="bg-secondary text-white col-sm-5">Kode</th>
+                            <th class="bg-secondary text-white">Pada</th>
+                            <th class="bg-secondary text-white" id="aksi">Aksi</th>
+                        </tr>
+
+                        <?php
+                        $no = 1;
+                        $tanggal = $_GET['tgl'];
+                        $sql = mysqli_query($koneksi, "SELECT * FROM pos WHERE scan_pada = '$tanggal' ORDER BY scan_pada DESC");
+
+
+                        if (mysqli_num_rows($sql) > 0) {
+                            while ($row = mysqli_fetch_array($sql)) :
+                        ?>
+
+                                <tr>
+                                    <td><?= $no++ . '.' ?></td>
+                                    <td><?= $row['kode_pos'] ?></td>
+                                    <td><?= $row['scan_pada'] ?></td>
+                                    <td id="aksi"><a href="hapus.php?kode=<?= $row['kode_pos'] ?>&id=<?= $row['id'] ?>&tgl=<?= $tanggal ?>" class="btn btn-danger hapus"><i class="bi bi-trash mx-1"></i>Hapus</a></td>
+                                </tr>
+
+                            <?php endwhile; ?>
+                        <?php } else { ?>
+                            <tr>
+                                <td colspan="4" class="fw-bold">Tidak Ada Data</td>
+                            </tr>
+                        <?php } ?>
+                        <tr>
+                            <th colspan="2" class="bg-secondary text-white">Total</th>
+                            <th colspan="2" class="bg-secondary text-white" id="total"><?= mysqli_num_rows($sql) ?></th>
+                        </tr>
+                    </table>
+                <?php } else {
+                    echo "";
+                } ?>
                 <div class="jarak"></div>
                 <!-- tabel SiCepat -->
-                <table class="table table-striped table-bordered text-center my-3 border-dark" id="sicepat">
-                    <tr>
-                        <th colspan="4" style="background-color: red;" class="text-white" id="tableTitle">SiCepat</th>
-                    </tr>
-                    <tr>
-                        <th class="bg-secondary text-white">No</th>
-                        <th class="bg-secondary text-white col-sm-5">Kode</th>
-                        <th class="bg-secondary text-white">Pada</th>
-                        <th class="bg-secondary text-white" id="aksi">Aksi</th>
-                    </tr>
-
-                    <?php
-                    $no = 1;
-                    $tanggal = $_GET['tgl'];
-                    $sql = mysqli_query($koneksi, "SELECT * FROM sicepat WHERE scan_pada = '$tanggal' ORDER BY scan_pada DESC");
-
-
-                    if (mysqli_num_rows($sql) > 0) {
-                        while ($row = mysqli_fetch_array($sql)) :
-                    ?>
-
-                            <tr>
-                                <td><?= $no++ . '.' ?></td>
-                                <td><?= $row['kode_sicepat'] ?></td>
-                                <td><?= $row['scan_pada'] ?></td>
-                                <td id="aksi"><a href="hapus.php?kode=<?= $row['kode_sicepat'] ?>&id=<?= $row['id'] ?>&tgl=<?= $tanggal ?>" class="btn btn-danger hapus"><i class="bi bi-trash mx-1"></i>Hapus</a></td>
-                            </tr>
-
-                        <?php endwhile; ?>
-                    <?php } else { ?>
+                <?php $sql = mysqli_query($koneksi, "SELECT * FROM sicepat WHERE scan_pada = '$tgl'");
+                if (mysqli_num_rows($sql) > 0) { ?>
+                    <table class="table table-striped table-bordered text-center my-3 border-dark" id="sicepat">
                         <tr>
-                            <td colspan="4" class="fw-bold">Tidak Ada Data</td>
+                            <th colspan="4" style="background-color: red;" class="text-white" id="tableTitle">SiCepat</th>
                         </tr>
-                    <?php } ?>
-                    <tr>
-                        <th colspan="2" class="bg-secondary text-white">Total</th>
-                        <th colspan="2" class="bg-secondary text-white" id="total"><?= mysqli_num_rows($sql) ?></th>
-                    </tr>
-                </table>
+                        <tr>
+                            <th class="bg-secondary text-white">No</th>
+                            <th class="bg-secondary text-white col-sm-5">Kode</th>
+                            <th class="bg-secondary text-white">Pada</th>
+                            <th class="bg-secondary text-white" id="aksi">Aksi</th>
+                        </tr>
+
+                        <?php
+                        $no = 1;
+                        $tanggal = $_GET['tgl'];
+                        $sql = mysqli_query($koneksi, "SELECT * FROM sicepat WHERE scan_pada = '$tanggal' ORDER BY scan_pada DESC");
+
+
+                        if (mysqli_num_rows($sql) > 0) {
+                            while ($row = mysqli_fetch_array($sql)) :
+                        ?>
+
+                                <tr>
+                                    <td><?= $no++ . '.' ?></td>
+                                    <td><?= $row['kode_sicepat'] ?></td>
+                                    <td><?= $row['scan_pada'] ?></td>
+                                    <td id="aksi"><a href="hapus.php?kode=<?= $row['kode_sicepat'] ?>&id=<?= $row['id'] ?>&tgl=<?= $tanggal ?>" class="btn btn-danger hapus"><i class="bi bi-trash mx-1"></i>Hapus</a></td>
+                                </tr>
+
+                            <?php endwhile; ?>
+                        <?php } else { ?>
+                            <tr>
+                                <td colspan="4" class="fw-bold">Tidak Ada Data</td>
+                            </tr>
+                        <?php } ?>
+                        <tr>
+                            <th colspan="2" class="bg-secondary text-white">Total</th>
+                            <th colspan="2" class="bg-secondary text-white" id="total"><?= mysqli_num_rows($sql) ?></th>
+                        </tr>
+                    </table>
+                <?php } else {
+                    echo "";
+                } ?>
                 <!-- tabel Anter Aja -->
-                <table class="table table-striped table-bordered text-center my-3 border-dark" id="anteraja">
-                    <tr>
-                        <th colspan="4" style="background-color: #f52268;" class="text-white" id="tableTitle">Anter Aja</th>
-                    </tr>
-                    <tr>
-                        <th class="bg-secondary text-white">No</th>
-                        <th class="bg-secondary text-white col-sm-5">Kode</th>
-                        <th class="bg-secondary text-white">Pada</th>
-                        <th class="bg-secondary text-white" id="aksi">Aksi</th>
-                    </tr>
-
-                    <?php
-                    $no = 1;
-                    $tanggal = $_GET['tgl'];
-                    $sql = mysqli_query($koneksi, "SELECT * FROM anteraja WHERE scan_pada = '$tanggal' ORDER BY scan_pada DESC");
-
-
-                    if (mysqli_num_rows($sql) > 0) {
-                        while ($row = mysqli_fetch_array($sql)) :
-                    ?>
-
-                            <tr>
-                                <td><?= $no++ . '.' ?></td>
-                                <td><?= $row['kode_anteraja'] ?></td>
-                                <td><?= $row['scan_pada'] ?></td>
-                                <td id="aksi"><a href="hapus.php?kode=<?= $row['kode_anteraja'] ?>&id=<?= $row['id'] ?>&tgl=<?= $tanggal ?>" class="btn btn-danger hapus"><i class="bi bi-trash mx-1"></i>Hapus</a></td>
-                            </tr>
-
-                        <?php endwhile; ?>
-                    <?php } else { ?>
+                <?php $sql = mysqli_query($koneksi, "SELECT * FROM anteraja WHERE scan_pada = '$tgl'");
+                if (mysqli_num_rows($sql) > 0) { ?>
+                    <table class="table table-striped table-bordered text-center my-3 border-dark" id="anteraja">
                         <tr>
-                            <td colspan="4" class="fw-bold">Tidak Ada Data</td>
+                            <th colspan="4" style="background-color: #f52268;" class="text-white" id="tableTitle">Anter Aja</th>
                         </tr>
-                    <?php } ?>
-                    <tr>
-                        <th colspan="2" class="bg-secondary text-white">Total</th>
-                        <th colspan="2" class="bg-secondary text-white" id="total"><?= mysqli_num_rows($sql) ?></th>
-                    </tr>
-                </table>
+                        <tr>
+                            <th class="bg-secondary text-white">No</th>
+                            <th class="bg-secondary text-white col-sm-5">Kode</th>
+                            <th class="bg-secondary text-white">Pada</th>
+                            <th class="bg-secondary text-white" id="aksi">Aksi</th>
+                        </tr>
+
+                        <?php
+                        $no = 1;
+                        $tanggal = $_GET['tgl'];
+                        $sql = mysqli_query($koneksi, "SELECT * FROM anteraja WHERE scan_pada = '$tanggal' ORDER BY scan_pada DESC");
+
+
+                        if (mysqli_num_rows($sql) > 0) {
+                            while ($row = mysqli_fetch_array($sql)) :
+                        ?>
+
+                                <tr>
+                                    <td><?= $no++ . '.' ?></td>
+                                    <td><?= $row['kode_anteraja'] ?></td>
+                                    <td><?= $row['scan_pada'] ?></td>
+                                    <td id="aksi"><a href="hapus.php?kode=<?= $row['kode_anteraja'] ?>&id=<?= $row['id'] ?>&tgl=<?= $tanggal ?>" class="btn btn-danger hapus"><i class="bi bi-trash mx-1"></i>Hapus</a></td>
+                                </tr>
+
+                            <?php endwhile; ?>
+                        <?php } else { ?>
+                            <tr>
+                                <td colspan="4" class="fw-bold">Tidak Ada Data</td>
+                            </tr>
+                        <?php } ?>
+                        <tr>
+                            <th colspan="2" class="bg-secondary text-white">Total</th>
+                            <th colspan="2" class="bg-secondary text-white" id="total"><?= mysqli_num_rows($sql) ?></th>
+                        </tr>
+                    </table>
+                <?php } else {
+                    echo "";
+                } ?>
                 <!-- tabel Ninja Express -->
-                <table class="table table-striped table-bordered text-center my-3 border-dark" id="ninja">
-                    <tr>
-                        <th colspan="4" style="background-color: red;" class="text-white" id="tableTitle">Ninja Express</th>
-                    </tr>
-                    <tr>
-                        <th class="bg-secondary text-white">No</th>
-                        <th class="bg-secondary text-white col-sm-5">Kode</th>
-                        <th class="bg-secondary text-white">Pada</th>
-                        <th class="bg-secondary text-white" id="aksi">Aksi</th>
-                    </tr>
-
-                    <?php
-                    $no = 1;
-                    $tanggal = $_GET['tgl'];
-                    $sql = mysqli_query($koneksi, "SELECT * FROM ninjaexpress WHERE scan_pada = '$tanggal' ORDER BY scan_pada DESC");
-
-
-                    if (mysqli_num_rows($sql) > 0) {
-                        while ($row = mysqli_fetch_array($sql)) :
-                    ?>
-
-                            <tr>
-                                <td><?= $no++ . '.' ?></td>
-                                <td><?= $row['kode_ninjaexpress'] ?></td>
-                                <td><?= $row['scan_pada'] ?></td>
-                                <td id="aksi"><a href="hapus.php?kode=<?= $row['kode_ninjaexpress'] ?>&id=<?= $row['id'] ?>&tgl=<?= $tanggal ?>" class="btn btn-danger hapus"><i class="bi bi-trash mx-1"></i>Hapus</a></td>
-                            </tr>
-
-                        <?php endwhile; ?>
-                    <?php } else { ?>
+                <?php $sql = mysqli_query($koneksi, "SELECT * FROM ninjaexpress WHERE scan_pada = '$tgl'");
+                if (mysqli_num_rows($sql) > 0) { ?>
+                    <table class="table table-striped table-bordered text-center my-3 border-dark" id="ninja">
                         <tr>
-                            <td colspan="4" class="fw-bold">Tidak Ada Data</td>
+                            <th colspan="4" style="background-color: red;" class="text-white" id="tableTitle">Ninja Express</th>
                         </tr>
-                    <?php } ?>
-                    <tr>
-                        <th colspan="2" class="bg-secondary text-white">Total</th>
-                        <th colspan="2" class="bg-secondary text-white" id="total"><?= mysqli_num_rows($sql) ?></th>
-                    </tr>
-                </table>
+                        <tr>
+                            <th class="bg-secondary text-white">No</th>
+                            <th class="bg-secondary text-white col-sm-5">Kode</th>
+                            <th class="bg-secondary text-white">Pada</th>
+                            <th class="bg-secondary text-white" id="aksi">Aksi</th>
+                        </tr>
+
+                        <?php
+                        $no = 1;
+                        $tanggal = $_GET['tgl'];
+                        $sql = mysqli_query($koneksi, "SELECT * FROM ninjaexpress WHERE scan_pada = '$tanggal' ORDER BY scan_pada DESC");
+
+
+                        if (mysqli_num_rows($sql) > 0) {
+                            while ($row = mysqli_fetch_array($sql)) :
+                        ?>
+
+                                <tr>
+                                    <td><?= $no++ . '.' ?></td>
+                                    <td><?= $row['kode_ninjaexpress'] ?></td>
+                                    <td><?= $row['scan_pada'] ?></td>
+                                    <td id="aksi"><a href="hapus.php?kode=<?= $row['kode_ninjaexpress'] ?>&id=<?= $row['id'] ?>&tgl=<?= $tanggal ?>" class="btn btn-danger hapus"><i class="bi bi-trash mx-1"></i>Hapus</a></td>
+                                </tr>
+
+                            <?php endwhile; ?>
+                        <?php } else { ?>
+                            <tr>
+                                <td colspan="4" class="fw-bold">Tidak Ada Data</td>
+                            </tr>
+                        <?php } ?>
+                        <tr>
+                            <th colspan="2" class="bg-secondary text-white">Total</th>
+                            <th colspan="2" class="bg-secondary text-white" id="total"><?= mysqli_num_rows($sql) ?></th>
+                        </tr>
+                    </table>
+                <?php } else {
+                    echo "";
+                } ?>
                 <!-- tabel ID Express -->
-                <table class="table table-striped table-bordered text-center my-3 border-dark" id="idexpress">
-                    <tr>
-                        <th colspan="4" style="background-color: #fc2b2b;" class="text-white" id="tableTitle">ID Express</th>
-                    </tr>
-                    <tr>
-                        <th class="bg-secondary text-white">No</th>
-                        <th class="bg-secondary text-white col-sm-5">Kode</th>
-                        <th class="bg-secondary text-white">Pada</th>
-                        <th class="bg-secondary text-white" id="aksi">Aksi</th>
-                    </tr>
-
-                    <?php
-                    $no = 1;
-                    $tanggal = $_GET['tgl'];
-                    $sql = mysqli_query($koneksi, "SELECT * FROM idexpress WHERE scan_pada = '$tanggal' ORDER BY scan_pada DESC");
-
-
-                    if (mysqli_num_rows($sql) > 0) {
-                        while ($row = mysqli_fetch_array($sql)) :
-                    ?>
-
-                            <tr>
-                                <td><?= $no++ . '.' ?></td>
-                                <td><?= $row['kode_idexpress'] ?></td>
-                                <td><?= $row['scan_pada'] ?></td>
-                                <td id="aksi"><a href="hapus.php?kode=<?= $row['kode_idexpress'] ?>&id=<?= $row['id'] ?>&tgl=<?= $tanggal ?>" class="btn btn-danger hapus"><i class="bi bi-trash mx-1"></i>Hapus</a></td>
-                            </tr>
-
-                        <?php endwhile; ?>
-                    <?php } else { ?>
+                <?php $sql = mysqli_query($koneksi, "SELECT * FROM idexpress WHERE scan_pada = '$tgl'");
+                if (mysqli_num_rows($sql) > 0) { ?>
+                    <table class="table table-striped table-bordered text-center my-3 border-dark" id="idexpress">
                         <tr>
-                            <td colspan="4" class="fw-bold">Tidak Ada Data</td>
+                            <th colspan="4" style="background-color: #fc2b2b;" class="text-white" id="tableTitle">ID Express</th>
                         </tr>
-                    <?php } ?>
-                    <tr>
-                        <th colspan="2" class="bg-secondary text-white">Total</th>
-                        <th colspan="2" class="bg-secondary text-white" id="total"><?= mysqli_num_rows($sql) ?></th>
-                    </tr>
-                </table>
+                        <tr>
+                            <th class="bg-secondary text-white">No</th>
+                            <th class="bg-secondary text-white col-sm-5">Kode</th>
+                            <th class="bg-secondary text-white">Pada</th>
+                            <th class="bg-secondary text-white" id="aksi">Aksi</th>
+                        </tr>
+
+                        <?php
+                        $no = 1;
+                        $tanggal = $_GET['tgl'];
+                        $sql = mysqli_query($koneksi, "SELECT * FROM idexpress WHERE scan_pada = '$tanggal' ORDER BY scan_pada DESC");
+
+
+                        if (mysqli_num_rows($sql) > 0) {
+                            while ($row = mysqli_fetch_array($sql)) :
+                        ?>
+
+                                <tr>
+                                    <td><?= $no++ . '.' ?></td>
+                                    <td><?= $row['kode_idexpress'] ?></td>
+                                    <td><?= $row['scan_pada'] ?></td>
+                                    <td id="aksi"><a href="hapus.php?kode=<?= $row['kode_idexpress'] ?>&id=<?= $row['id'] ?>&tgl=<?= $tanggal ?>" class="btn btn-danger hapus"><i class="bi bi-trash mx-1"></i>Hapus</a></td>
+                                </tr>
+
+                            <?php endwhile; ?>
+                        <?php } else { ?>
+                            <tr>
+                                <td colspan="4" class="fw-bold">Tidak Ada Data</td>
+                            </tr>
+                        <?php } ?>
+                        <tr>
+                            <th colspan="2" class="bg-secondary text-white">Total</th>
+                            <th colspan="2" class="bg-secondary text-white" id="total"><?= mysqli_num_rows($sql) ?></th>
+                        </tr>
+                    </table>
+                <?php } else {
+                    echo "";
+                } ?>
             </div>
 
         <?php } else if ($_GET['tgl'] == NULL && $_GET['eks'] == !NULL) { ?>
@@ -1277,7 +1360,7 @@
                     </div>
 
                 <?php } ?>
-                <?php } ?>x`
+            <?php } ?>
 
 
             </div>
